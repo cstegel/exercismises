@@ -55,6 +55,7 @@ trait UniqueExt: Iterator {
 }
 
 impl<I: Iterator> UniqueExt for I {}
+
 fn unique_multiples<'a>(limit: u32, factors: &'a [u32]) -> impl Iterator<Item = u32> + 'a {
     factors
         .iter()
@@ -62,6 +63,6 @@ fn unique_multiples<'a>(limit: u32, factors: &'a [u32]) -> impl Iterator<Item = 
         .unique()
 }
 
-pub fn sum_of_multiples<'a>(limit: u32, factors: &'a [u32]) -> u32 {
+pub fn sum_of_multiples(limit: u32, factors: &[u32]) -> u32 {
     unique_multiples(limit, factors).sum()
 }
