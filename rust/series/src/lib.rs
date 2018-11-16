@@ -1,7 +1,9 @@
 pub fn series(digits: &str, len: usize) -> Vec<String> {
-    unimplemented!(
-        "What are the series of length {} in string {:?}",
-        len,
-        digits
-    )
+    if len > digits.len() {
+        return Vec::new();
+    }
+
+    (0..=digits.len() - len)
+        .map(|start| (&digits[start..start + len]).to_string())
+        .collect()
 }
