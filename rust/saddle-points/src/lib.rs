@@ -2,6 +2,8 @@ use std::vec::Vec;
 
 /// Find points where value is >= all in row and <= all in col
 /// input: slice of rows
+/// run time: O(rows * cols)
+/// memory: O(rows + cols)
 pub fn find_saddle_points(input: &[Vec<u64>]) -> Vec<(usize, usize)> {
     if input.is_empty() || input[0].is_empty() {
         return Vec::new();
