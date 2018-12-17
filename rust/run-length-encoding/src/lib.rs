@@ -5,9 +5,7 @@ use regex::Regex;
 /// Run-length encode a string. String must only consist of
 /// a-z, A-Z, and whitespace
 pub fn encode(source: &str) -> String {
-    println!("hi");
     if source.len() == 0 {
-        println!("empty");
         return String::new();
     }
 
@@ -22,14 +20,13 @@ pub fn encode(source: &str) -> String {
         }
         run_len += 1;
     }
-    println!("end, {}, {}", cur_char, run_len);
     run_seq.push((cur_char, run_len));
 
     run_seq
         .iter()
         .map(|(ch, len)| match len {
             1 => ch.to_string(),
-            _ => ch.to_string().repeat(*len),
+            _ => len.to_string() + ch.to_string().as_str(),
         }).collect()
 }
 
@@ -39,19 +36,15 @@ pub fn decode(source: &str) -> String {
     }
 
     let char_regex = Regex::new(r"[a-zA-Z ]").unwrap();
-
     let run_lens = source
         .split(|ch: char| char_regex.is_match(ch.to_string().as_str()))
-        .filter(|s| s.len() > 0)
-        .map(|x| {
-            println!("'{}'", x);
-            x.parse::<usize>()
-                .expect(format!("Invalid run length, must be number: {}", x).as_str())
-        });
-    let char_seq = source.chars().filter(|ch| ch.is_alphabetic() || *ch == ' ');
+        .map(|x| x.parse::<usize>());
+    let char_seq = source
+        .chars()
+        .filter(|ch| char_regex.is_match(ch.to_string().as_str()));
 
-    run_lens
-        .zip(char_seq)
-        .map(|(len, ch)| ch.to_string().repeat(len))
+    char_seq
+        .zip(run_lens)
+        .map(|(ch, len)| ch.to_string().repeat(len.unwrap_or(1)))
         .collect()
 }
