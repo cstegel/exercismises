@@ -1,32 +1,20 @@
+extern crate itertools;
 extern crate regex;
 
 use regex::Regex;
 
+use itertools::Itertools;
+
 /// Run-length encode a string. String must only consist of
 /// a-z, A-Z, and whitespace
 pub fn encode(source: &str) -> String {
-    if source.len() == 0 {
-        return String::new();
-    }
-
-    let mut run_seq: Vec<(char, usize)> = Vec::new();
-    let mut cur_char = source.chars().next().unwrap();
-    let mut run_len: usize = 0;
-    for ch in source.chars() {
-        if ch != cur_char {
-            run_seq.push((cur_char, run_len));
-            cur_char = ch;
-            run_len = 0;
-        }
-        run_len += 1;
-    }
-    run_seq.push((cur_char, run_len));
-
-    run_seq
-        .iter()
-        .map(|(ch, len)| match len {
+    source
+        .chars()
+        .group_by(|&c| c)
+        .into_iter()
+        .map(|(ch, run)| match run.count() {
             1 => ch.to_string(),
-            _ => len.to_string() + ch.to_string().as_str(),
+            len => len.to_string() + ch.to_string().as_str(),
         }).collect()
 }
 
