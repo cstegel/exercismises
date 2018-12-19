@@ -19,7 +19,7 @@ pub fn is_valid_isbn(isbn: &str) -> bool {
     let all_but_last = || undashed_isbn().take(n - 1);
 
     // check all but last digits are valid chars
-    if undashed_isbn().take(n - 1).any(|ch| !ch.is_digit(10)) {
+    if all_but_last().any(|ch| !ch.is_digit(10)) {
         return false;
     }
 
@@ -29,16 +29,15 @@ pub fn is_valid_isbn(isbn: &str) -> bool {
         return false;
     }
 
-    // evaluate the digits
-    let digit_eval: u32 = all_but_last()
+    let digits = all_but_last()
         .map(|ch| ch.to_digit(10).unwrap())
         .chain(iter::once(match last_ch {
             'X' => 10,
             _ => last_ch.to_digit(10).unwrap(),
-        })).enumerate()
-        .map(|(i, x)| x * (10 - i as u32))
-        .sum();
+        }));
+
+    let digits_eval: u32 = digits.enumerate().map(|(i, x)| x * (10 - i as u32)).sum();
 
     // check modulus is correct
-    digit_eval % 11 == 0
+    digits_eval % 11 == 0
 }
