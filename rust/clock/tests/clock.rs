@@ -12,6 +12,11 @@ fn test_on_the_hour() {
 }
 
 #[test]
+fn test_on_the_hour_from_string() {
+    assert_eq!(String::from(Clock::new(8, 0)), "08:00");
+}
+
+#[test]
 #[ignore]
 fn test_past_the_hour() {
     assert_eq!(Clock::new(11, 9).to_string(), "11:09");
