@@ -1,33 +1,49 @@
 pub mod graph {
+    use std::collections::HashMap;
+
+    fn attrs_slice_to_map<T: AsRef<str>>(attrs: &[(T, T)]) -> HashMap<String, String> {
+        attrs
+            .iter()
+            .map(|(k, v)| (k.as_ref().to_string(), v.as_ref().to_string()))
+            .collect()
+    }
+
     pub mod graph_items {
         pub mod node {
+            use std::collections::HashMap;
+
+            #[derive(PartialEq, Debug, Clone)]
             pub struct Node {
-                name: String,
-                attrs: Vec<Attribute>,
+                pub name: String,
+                pub attrs: HashMap<String, String>,
             }
 
             impl Node {
                 pub fn new(name: &str) -> Self {
                     Node {
                         name: name.to_string(),
-                        attrs: vec![],
+                        attrs: HashMap::new(),
                     }
                 }
 
-                pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Node {
-                    self.attrs = attrs
-                        .iter()
-                        .map(|(key, val)| Attribute::new(&key, &val))
-                        .collect();
+                pub fn with_attrs<T: AsRef<str>>(mut self, attrs: &[(T, T)]) -> Node {
+                    self.attrs = crate::graph::attrs_slice_to_map(attrs);
                     self
+                }
+
+                pub fn get_attr(&self, name: &str) -> Option<&str> {
+                    self.attrs.get(name).map(String::as_str)
                 }
             }
         }
         pub mod edge {
+            use std::collections::HashMap;
+
+            #[derive(Debug, PartialEq, Clone)]
             pub struct Edge {
-                start: String,
-                end: String,
-                attrs: Vec<Attribute>,
+                pub start: String,
+                pub end: String,
+                pub attrs: HashMap<String, String>,
             }
 
             impl Edge {
@@ -35,24 +51,26 @@ pub mod graph {
                     Edge {
                         start: start.to_string(),
                         end: end.to_string(),
-                        attrs: vec![],
+                        attrs: HashMap::new(),
                     }
                 }
 
-                pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Edge {
-                    self.attrs = attrs
-                        .iter()
-                        .map(|(key, val)| Attribute::new(&key, &val))
-                        .collect();
+                pub fn with_attrs<T: AsRef<str>>(mut self, attrs: &[(T, T)]) -> Edge {
+                    self.attrs = crate::graph::attrs_slice_to_map(attrs);
                     self
                 }
             }
         }
     }
+
+    use crate::graph::graph_items::edge::Edge;
+    use crate::graph::graph_items::node::Node;
+
+    #[derive(PartialEq, Debug, Clone)]
     pub struct Graph {
-        nodes: Vec<Node>,
-        edges: Vec<Edge>,
-        attrs: Vec<Attribute>,
+        pub nodes: Vec<Node>,
+        pub edges: Vec<Edge>,
+        pub attrs: HashMap<String, String>,
     }
 
     impl Graph {
@@ -60,23 +78,28 @@ pub mod graph {
             Graph {
                 nodes: vec![],
                 edges: vec![],
-                attrs: vec![],
+                attrs: HashMap::new(),
             }
         }
 
-        pub fn with_attrs(mut self, attrs: Vec<Attribute>) -> Self {
-            self.attrs = attrs;
+        pub fn get_node(&self, name: &str) -> Option<&Node> {
+            self.nodes.iter().find(|n| n.name == name)
+        }
+
+        pub fn with_attrs<T: AsRef<str>>(mut self, attrs: &[(T, T)]) -> Self {
+            self.attrs = crate::graph::attrs_slice_to_map(attrs);
             self
         }
 
-        pub fn with_nodes(mut self, nodes: Vec<Node>) -> Self {
-            self.nodes = nodes;
+        pub fn with_nodes(mut self, nodes: &[Node]) -> Self {
+            self.nodes = nodes.iter().cloned().collect();
             self
         }
 
-        pub fn with_edges(mut self, edges: Vec<Edge>) -> Self {
-            self.edges = edges;
+        pub fn with_edges(mut self, edges: &[Edge]) -> Self {
+            self.edges = edges.iter().cloned().collect();
             self
         }
     }
+
 }
