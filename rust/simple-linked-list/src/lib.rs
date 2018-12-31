@@ -1,5 +1,4 @@
 use std::iter::FromIterator;
-use std::mem;
 
 struct Node<T> {
     val: T,
@@ -39,12 +38,12 @@ impl<T> SimpleLinkedList<T> {
 
     pub fn push(&mut self, element: T) {
         let mut new_node = Box::new(Node::new(element));
-        new_node.next = mem::replace(&mut self.head, None);
+        new_node.next = self.head.take();
         self.head = Some(new_node);
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        if let Some(node) = mem::replace(&mut self.head, None) {
+        if let Some(node) = self.head.take() {
             self.head = node.next;
             Some(node.val)
         } else {
@@ -129,7 +128,7 @@ impl<T> Iterator for SimpleLinkedListIntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        if let Some(node) = mem::replace(&mut self.node, None) {
+        if let Some(node) = self.node.take() {
             self.node = node.next;
             Some(node.val)
         } else {
