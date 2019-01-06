@@ -5,29 +5,19 @@ pub enum Error {
 }
 
 pub fn lsp(string_digits: &str, span: usize) -> Result<u64, Error> {
-    if span > string_digits.len() {
-        return Err(Error::SpanTooLong);
-    }
     if span == 0 {
         // tests say 1 is expected return value of 0-length span
         return Ok(1);
     }
 
-    let digits = match string_digits
+    // Inspired by bwasty's solution:
+    // https://exercism.io/tracks/rust/exercises/largest-series-product/solutions/aa49c251125a49f89fbb698e5e41ca04
+    string_digits
         .chars()
-        .map(|c| c.to_digit(10).ok_or(c))
-        .collect::<Result<Vec<_>, char>>()
-    {
-        Err(invalid_char) => return Err(Error::InvalidDigit(invalid_char)),
-        Ok(digits) => digits,
-    };
-
-    match digits
+        .map(|c| c.to_digit(10).ok_or(Error::InvalidDigit(c)))
+        .collect::<Result<Vec<_>, _>>()?
         .windows(span)
-        .map(|window| window.iter().product::<u32>())
+        .map(|window| window.iter().product::<u32>() as u64)
         .max()
-    {
-        Some(max_prod) => Ok(max_prod as u64),
-        None => panic!("Shouldn't get here"),
-    }
+        .ok_or(Error::SpanTooLong)
 }
