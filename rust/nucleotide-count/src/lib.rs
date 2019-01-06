@@ -1,13 +1,19 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
 
-static NUCLEOTIDES: [char; 4] = ['A', 'C', 'G', 'T'];
+#[macro_use]
+extern crate lazy_static;
 
-fn validate(nucleotide: char) -> Result<char, char> {
-    NUCLEOTIDES
-        .iter()
-        .cloned()
-        .find(|c| *c == nucleotide)
-        .ok_or(nucleotide)
+lazy_static! {
+    static ref NUCLEOTIDES: HashSet<char> = "ACGT".chars().collect();
+}
+
+fn validate(candidate: char) -> Result<char, char> {
+    if NUCLEOTIDES.contains(&candidate) {
+        Ok(candidate)
+    } else {
+        Err(candidate)
+    }
 }
 
 pub fn count(nucleotide: char, dna: &str) -> Result<usize, char> {
