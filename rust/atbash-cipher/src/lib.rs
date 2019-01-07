@@ -15,7 +15,7 @@ pub fn encode(plain: &str) -> String {
         .chars()
         .filter(|c| c.is_ascii_alphanumeric())
         .map(encode_char)
-        .collect::<Vec<char>>()
+        .collect::<Vec<_>>()
         .chunks(5)
         .intersperse(&[' '])
         .flatten()
