@@ -4,6 +4,7 @@ use std::iter;
 
 pub fn encrypt(input: &str) -> String {
     // constraints:
+    // only alphanumeric chars allowed
     // cols >= rows
     // cols - rows <= 1
 
