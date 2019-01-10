@@ -4,3 +4,5 @@ name = "crypto-square"
 version = "0.1.0"
 
 [dependencies]
+integer-sqrt = "0.1.2"
+itertools = "0.8.0"
