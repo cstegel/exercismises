@@ -17,13 +17,11 @@ pub fn abbreviate(phrase: &str) -> String {
         }
     };
 
-    let to_acro_char = |ch: char| ch.to_uppercase().collect::<String>();
-
     for ch in phrase.chars() {
         prev_char = match prev_char {
             LastChar::Nothing => {
                 if ch.is_alphabetic() {
-                    acronym.push_str(to_acro_char(ch).as_str());
+                    acronym.push(ch);
                     alphabetic_state(ch)
                 } else {
                     LastChar::Separator
@@ -32,7 +30,7 @@ pub fn abbreviate(phrase: &str) -> String {
             LastChar::Lowercase => {
                 if ch.is_alphabetic() {
                     if ch.is_uppercase() {
-                        acronym.push_str(to_acro_char(ch).as_str());
+                        acronym.push(ch);
                     }
                     alphabetic_state(ch)
                 } else {
@@ -48,7 +46,7 @@ pub fn abbreviate(phrase: &str) -> String {
             }
             LastChar::Separator => {
                 if ch.is_alphabetic() {
-                    acronym.push_str(to_acro_char(ch).as_str());
+                    acronym.push(ch);
                     alphabetic_state(ch)
                 } else {
                     LastChar::Separator
@@ -56,5 +54,5 @@ pub fn abbreviate(phrase: &str) -> String {
             }
         }
     }
-    acronym
+    acronym.to_uppercase()
 }
