@@ -8,3 +8,4 @@ generic = []
 
 [dependencies]
 itertools = "0.8.0"
+num = "0.2.0"
