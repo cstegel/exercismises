@@ -1,3 +1,4 @@
+/// Iterate over the digits of a number starting from the least significant
 #[derive(Debug)]
 struct Digits {
     num: u32,
